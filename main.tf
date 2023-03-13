@@ -140,10 +140,12 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   }
 
   dynamic "plan" {
-    for_each  = var.plan_info != null ? [1] : []
-    name      = var.plan_info.name
-    publisher = var.plan_info.publisher
-    product   = var.plan_info.product
+    for_each = var.plan_info != null ? [1] : []
+    content {
+      name      = var.plan_info.name
+      publisher = var.plan_info.publisher
+      product   = var.plan_info.product
+    }
   }
 
   dynamic "scale_in" {
