@@ -171,7 +171,7 @@ variable "data_disks" {
   default     = null
 }
 
-variable "extension" {
+variable "extensions" {
   type = map(object({
     name                       = string
     publisher                  = string
@@ -295,7 +295,7 @@ variable "termination_notification_info" {
   default     = null
 }
 
-variable "source_image_reference" {
+variable "source_image_ref" {
   type = object({
     publisher = string
     offer     = string
