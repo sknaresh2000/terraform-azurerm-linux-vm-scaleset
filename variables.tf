@@ -216,6 +216,7 @@ variable "network_interface_details" {
       load_balancer_backend_address_pool_ids       = list(string)
       load_balancer_inbound_nat_rules_ids          = list(string)
       primary                                      = bool
+      subnet_id                                    = string
       public_ip_address = object({
         name                    = string
         domain_name_label       = string

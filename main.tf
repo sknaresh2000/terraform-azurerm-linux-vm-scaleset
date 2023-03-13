@@ -116,6 +116,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
           load_balancer_backend_address_pool_ids       = ip_configuration.value.load_balancer_backend_address_pool_ids
           load_balancer_inbound_nat_rules_ids          = ip_configuration.value.load_balancer_inbound_nat_rules_ids
           primary                                      = ip_configuration.value.primary
+          subnet_id                                    = ip_configuration.value.subnet_id
           dynamic "public_ip_address" {
             for_each = ip_configuration.value.public_ip_address != null ? [1] : []
             content {
