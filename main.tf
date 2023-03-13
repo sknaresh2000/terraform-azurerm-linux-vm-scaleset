@@ -17,6 +17,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   provision_vm_agent                                = var.provision_vm_agent
   priority                                          = var.priority
   secure_boot_enabled                               = var.secure_boot_enabled
+  sku                                               = var.sku_name
   source_image_id                                   = var.source_image_ref == null ? var.source_image_id : null
   upgrade_mode                                      = var.upgrade_mode
   user_data                                         = var.user_data
@@ -77,11 +78,13 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
       automatic_upgrade_enabled  = extension.value.automatic_upgrade_enabled
       force_update_tag           = extension.value.force_update_tag
       protected_settings         = extension.value.protected_settings
+      provision_after_extensions = extension.value.provision_after_extensions
+      settings                   = extension.value.settings
       dynamic "protected_settings_from_key_vault" {
         for_each = extension.value.protected_settings_from_key_vault != null ? [1] : [0]
         content {
-          provision_after_extensions = protected_settings_from_key_vault.value.provision_after_extensions
-          settings                   = protected_settings_from_key_vault.value.settings
+          secret_url      = protected_settings_from_key_vault.value.secret_url
+          source_vault_id = protected_settings_from_key_vault.value.source_vault_id
         }
       }
     }
@@ -98,13 +101,12 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   dynamic "network_interface" {
     for_each = var.network_interface_details
     content {
-      name                           = network_interface.value.name
-      ip_configuration               = network_interface.value.ip_configuration
-      dns_servers                    = network_interface.value.dns_servers
-      enabled_accelerated_networking = network_interface.value.enabled_accelerated_networking
-      enable_ip_forwarding           = network_interface.value.enable_ip_forwarding
-      network_security_group_id      = network_interface.value.network_security_group_id
-      primary                        = network_interface.value.primary
+      name                          = network_interface.value.name
+      dns_servers                   = network_interface.value.dns_servers
+      enable_accelerated_networking = network_interface.value.enabled_accelerated_networking
+      enable_ip_forwarding          = network_interface.value.enable_ip_forwarding
+      network_security_group_id     = network_interface.value.network_security_group_id
+      primary                       = network_interface.value.primary
       dynamic "ip_configuration" {
         for_each = network_interface.value.ip_config_details != null ? network_interface.value.ip_config_details : []
         content {
@@ -120,7 +122,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
               name                    = public_ip_address.value.name
               domain_name_label       = public_ip_address.value.domain_name_label
               idle_timeout_in_minutes = public_ip_address.value.idle_timeout_in_minutes
-              ip_tag                  = public_ip_address.value.ip_tag
               public_ip_prefix_id     = public_ip_address.value.public_ip_prefix_id
               version                 = public_ip_address.value.version
             }
@@ -175,12 +176,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
         }
       }
     }
-  }
-
-  sku {
-    name     = var.sku_info.name
-    tier     = var.sku_info.tier
-    capacity = var.sku_info.capacity
   }
 
   dynamic "termination_notification" {

@@ -181,9 +181,11 @@ variable "extensions" {
     automatic_upgrade_enabled  = bool
     force_update_tag           = string
     protected_settings         = string
+    provision_after_extensions = list(string)
+    settings                   = string
     protected_settings_from_key_vault = object({
-      provision_after_extensions = list(string)
-      settings                   = string
+      secret_url      = string
+      source_vault_id = string
     })
   }))
   description = "Details about the extensions that needs to be installed in VMSS"
@@ -201,12 +203,12 @@ variable "identity_info" {
 
 variable "network_interface_details" {
   type = map(object({
-    name                           = string
-    dns_servers                    = list(string)
-    enabled_accelerated_networking = bool
-    enable_ip_forwarding           = bool
-    network_security_group_id      = string
-    primary                        = bool
+    name                          = string
+    dns_servers                   = list(string)
+    enable_accelerated_networking = bool
+    enable_ip_forwarding          = bool
+    network_security_group_id     = string
+    primary                       = bool
     ip_configuration = map(object({
       name                                         = string
       application_gateway_backend_address_pool_ids = list(string)
@@ -218,7 +220,6 @@ variable "network_interface_details" {
         name                    = string
         domain_name_label       = string
         idle_timeout_in_minutes = number
-        ip_tag                  = string
         public_ip_prefix_id     = string
         version                 = string
       })
