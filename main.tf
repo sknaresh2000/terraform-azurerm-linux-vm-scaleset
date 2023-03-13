@@ -1,4 +1,4 @@
-esource "azurerm_linux_virtual_machine_scale_set" "vmss" {
+resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   name                                              = var.name
   location                                          = var.location
   resource_group_name                               = var.rg_name
