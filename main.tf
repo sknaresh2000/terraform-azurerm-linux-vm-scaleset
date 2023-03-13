@@ -95,29 +95,6 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
     }
   }
 
-  dynamic "ip_configuration" {
-    for_each = var.ip_config_details
-    content {
-      name                                         = ip_configuration.value.name
-      application_gateway_backend_address_pool_ids = ip_configuration.value.application_gateway_backend_address_pool_ids
-      application_security_group_ids               = ip_configuration.value.application_security_group_ids
-      load_balancer_backend_address_pool_ids       = ip_configuration.value.load_balancer_backend_address_pool_ids
-      load_balancer_inbound_nat_rules_ids          = ip_configuration.value.load_balancer_inbound_nat_rules_ids
-      primary                                      = ip_configuration.value.primary
-      dynamic "public_ip_address" {
-        for_each = ip_configuration.value.public_ip_address != null ? [1] : []
-        content {
-          name                    = public_ip_address.value.name
-          domain_name_label       = public_ip_address.value.domain_name_label
-          idle_timeout_in_minutes = public_ip_address.value.idle_timeout_in_minutes
-          ip_tag                  = public_ip_address.value.ip_tag
-          public_ip_prefix_id     = public_ip_address.value.public_ip_prefix_id
-          version                 = public_ip_address.value.version
-        }
-      }
-    }
-  }
-
   dynamic "network_interface" {
     for_each = var.network_interface_details
     content {
@@ -128,6 +105,28 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
       enable_ip_forwarding           = network_interface.value.enable_ip_forwarding
       network_security_group_id      = network_interface.value.network_security_group_id
       primary                        = network_interface.value.primary
+      dynamic "ip_configuration" {
+        for_each = network_interface.value.ip_config_details != null ? network_interface.value.ip_config_details : []
+        content {
+          name                                         = ip_configuration.value.name
+          application_gateway_backend_address_pool_ids = ip_configuration.value.application_gateway_backend_address_pool_ids
+          application_security_group_ids               = ip_configuration.value.application_security_group_ids
+          load_balancer_backend_address_pool_ids       = ip_configuration.value.load_balancer_backend_address_pool_ids
+          load_balancer_inbound_nat_rules_ids          = ip_configuration.value.load_balancer_inbound_nat_rules_ids
+          primary                                      = ip_configuration.value.primary
+          dynamic "public_ip_address" {
+            for_each = ip_configuration.value.public_ip_address != null ? [1] : []
+            content {
+              name                    = public_ip_address.value.name
+              domain_name_label       = public_ip_address.value.domain_name_label
+              idle_timeout_in_minutes = public_ip_address.value.idle_timeout_in_minutes
+              ip_tag                  = public_ip_address.value.ip_tag
+              public_ip_prefix_id     = public_ip_address.value.public_ip_prefix_id
+              version                 = public_ip_address.value.version
+            }
+          }
+        }
+      }
     }
   }
 

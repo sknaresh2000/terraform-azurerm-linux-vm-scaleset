@@ -57,6 +57,7 @@ variable "rg_name" {
 variable "encryption_at_host_enabled" {
   type        = bool
   description = "Should all of the disks (including the temp disk) attached to this Virtual Machine be encrypted by enabling Encryption at Host?"
+  default     = false
 }
 
 variable "extension_operations_enabled" {
@@ -198,36 +199,30 @@ variable "identity_info" {
   default     = null
 }
 
-variable "ip_config_details" {
-  type = object({
-    name                                         = string
-    application_gateway_backend_address_pool_ids = list(string)
-    application_security_group_ids               = list(string)
-    load_balancer_backend_address_pool_ids       = list(string)
-    load_balancer_inbound_nat_rules_ids          = list(string)
-    primary                                      = bool
-    public_ip_address = object({
-      name                    = string
-      domain_name_label       = string
-      idle_timeout_in_minutes = number
-      ip_tag                  = string
-      public_ip_prefix_id     = string
-      version                 = string
-    })
-  })
-  description = "Details about the VMSS IP configuration"
-  default     = null
-}
-
 variable "network_interface_details" {
   type = map(object({
     name                           = string
-    ip_configuration               = string
     dns_servers                    = list(string)
     enabled_accelerated_networking = bool
     enable_ip_forwarding           = bool
     network_security_group_id      = string
     primary                        = bool
+    ip_configuration = map(object({
+      name                                         = string
+      application_gateway_backend_address_pool_ids = list(string)
+      application_security_group_ids               = list(string)
+      load_balancer_backend_address_pool_ids       = list(string)
+      load_balancer_inbound_nat_rules_ids          = list(string)
+      primary                                      = bool
+      public_ip_address = object({
+        name                    = string
+        domain_name_label       = string
+        idle_timeout_in_minutes = number
+        ip_tag                  = string
+        public_ip_prefix_id     = string
+        version                 = string
+      })
+    }))
   }))
   description = "Details about the VMSS network interface details."
 }
@@ -250,6 +245,7 @@ variable "plan_info" {
     product   = string
   })
   description = "Details about the VM plan info that will be created in VMSS"
+  default     = null
 }
 
 variable "scale_in_policy" {
@@ -285,13 +281,9 @@ variable "secrets_info" {
   default     = null
 }
 
-variable "sku_info" {
-  type = object({
-    name     = string
-    tier     = string
-    capacity = string
-  })
-  description = "Details of SKU for VMSS"
+variable "sku_name" {
+  type        = string
+  description = "SKU Name for VMSS"
 }
 
 variable "termination_notification_info" {
