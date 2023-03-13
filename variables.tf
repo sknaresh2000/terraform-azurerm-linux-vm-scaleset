@@ -1,6 +1,6 @@
 variable "name" {
   type        = string
-  description = "The name of the resource group to create"
+  description = "The name of the VMSS to create"
 }
 
 variable "location" {
@@ -180,10 +180,10 @@ variable "extension" {
     automatic_upgrade_enabled  = bool
     force_update_tag           = string
     protected_settings         = string
-    protected_settings_from_key_vault = {
+    protected_settings_from_key_vault = object({
       provision_after_extensions = list(string)
       settings                   = string
-    }
+    })
   }))
   description = "Details about the extensions that needs to be installed in VMSS"
   default     = null
@@ -206,14 +206,14 @@ variable "ip_config_details" {
     load_balancer_backend_address_pool_ids       = list(string)
     load_balancer_inbound_nat_rules_ids          = list(string)
     primary                                      = bool
-    public_ip_address = {
+    public_ip_address = object({
       name                    = string
       domain_name_label       = string
       idle_timeout_in_minutes = number
       ip_tag                  = string
       public_ip_prefix_id     = string
       version                 = string
-    }
+    })
   })
   description = "Details about the VMSS IP configuration"
   default     = null
@@ -277,9 +277,9 @@ variable "rolling_upgrade_policy" {
 variable "secrets_info" {
   type = map(object({
     key_vault_id = string
-    certificate_urls = {
+    certificate_urls = object({
       url = string
-    }
+    })
   }))
   description = "Details about the secrets for VMSS that are available in Key Vault"
   default     = null
