@@ -68,7 +68,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   }
 
   dynamic "extension" {
-    for_each = var.extensions
+    for_each = var.extensions != null ? var.extensions : {}
     content {
       name                       = extension.value.name
       publisher                  = extension.value.publisher
@@ -103,12 +103,12 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
     content {
       name                          = network_interface.value.name
       dns_servers                   = network_interface.value.dns_servers
-      enable_accelerated_networking = network_interface.value.enabled_accelerated_networking
+      enable_accelerated_networking = network_interface.value.enable_accelerated_networking
       enable_ip_forwarding          = network_interface.value.enable_ip_forwarding
       network_security_group_id     = network_interface.value.network_security_group_id
       primary                       = network_interface.value.primary
       dynamic "ip_configuration" {
-        for_each = network_interface.value.ip_config_details != null ? network_interface.value.ip_config_details : []
+        for_each = network_interface.value.ip_configuration
         content {
           name                                         = ip_configuration.value.name
           application_gateway_backend_address_pool_ids = ip_configuration.value.application_gateway_backend_address_pool_ids
@@ -139,7 +139,8 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
     write_accelerator_enabled = var.os_disk_info.write_accelerator_enabled
   }
 
-  plan {
+  dynamic "plan" {
+    for_each  = var.plan_info != null ? [1] : []
     name      = var.plan_info.name
     publisher = var.plan_info.publisher
     product   = var.plan_info.product
@@ -166,7 +167,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   }
 
   dynamic "secret" {
-    for_each = var.secrets_info
+    for_each = var.secrets_info != null ? var.secrets_info : {}
     content {
       key_vault_id = secret.value.key_vault_id
       dynamic "certificate" {
