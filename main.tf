@@ -12,18 +12,17 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   encryption_at_host_enabled                        = var.encryption_at_host_enabled
   extension_operations_enabled                      = var.extension_operations_enabled
   extensions_time_budget                            = var.extensions_time_budget
-  # health_probe_id                                   = azurerm_lb_probe.example.id
-  overprovision               = var.overprovision_vms
-  platform_fault_domain_count = var.fault_domain_count
-  provision_vm_agent          = var.provision_vm_agent
-  priority                    = var.priority
-  secure_boot_enabled         = var.secure_boot_enabled
-  source_image_id             = var.source_image_ref == null ? var.source_image_id : null
-  upgrade_mode                = var.upgrade_mode
-  user_data                   = var.user_data
-  zone_balance                = var.balance_zones
-  zones                       = var.zones
-  tags                        = var.tags
+  overprovision                                     = var.overprovision_vms
+  platform_fault_domain_count                       = var.fault_domain_count
+  provision_vm_agent                                = var.provision_vm_agent
+  priority                                          = var.priority
+  secure_boot_enabled                               = var.secure_boot_enabled
+  source_image_id                                   = var.source_image_ref == null ? var.source_image_id : null
+  upgrade_mode                                      = var.upgrade_mode
+  user_data                                         = var.user_data
+  zone_balance                                      = var.balance_zones
+  zones                                             = var.zones
+  tags                                              = var.tags
 
   dynamic "admin_ssh_key" {
     for_each = var.disable_password_authentication ? [1] : []
