@@ -54,7 +54,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   }
 
   dynamic "data_disk" {
-    for_each = var.data_disks != null ? var.data_disks : []
+    for_each = var.data_disks != null ? var.data_disks : {}
     content {
       name                      = data_disk.value.name
       caching                   = data_disk.value.caching
