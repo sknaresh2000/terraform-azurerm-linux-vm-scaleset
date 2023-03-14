@@ -288,6 +288,12 @@ variable "sku_name" {
   description = "SKU Name for VMSS"
 }
 
+variable "initial_instance_count" {
+  type        = number
+  description = "The number of Virtual Machines in the Scale Set"
+  default     = 1
+}
+
 variable "termination_notification_info" {
   type = object({
     enabled = bool

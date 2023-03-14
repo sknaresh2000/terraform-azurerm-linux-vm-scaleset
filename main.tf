@@ -12,6 +12,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss" {
   encryption_at_host_enabled                        = var.encryption_at_host_enabled
   extension_operations_enabled                      = var.extension_operations_enabled
   extensions_time_budget                            = var.extensions_time_budget
+  instances                                         = var.initial_instance_count
   overprovision                                     = var.overprovision_vms
   platform_fault_domain_count                       = var.fault_domain_count
   provision_vm_agent                                = var.provision_vm_agent
